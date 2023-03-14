@@ -11,6 +11,9 @@ module.exports = {
             fontFamily: {
                 inter: ["var(--font-inter)", "sans-serif"],
             },
+            fontSize: {
+                "2xs": "0.625rem",
+            }
         },
     },
     plugins: [
