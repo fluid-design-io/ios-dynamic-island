@@ -13,7 +13,7 @@ export const calculateBouceEffect = (
   newExpand: ExpandType
 ) => {
   let bounceEffect = 0.25;
-  let duration = 200;
+  let duration = 400;
   if (prevExpand == ExpandType.None && newExpand == ExpandType.Pill) {
     // undefined -> pill
     bounceEffect = 0.2;
@@ -34,12 +34,22 @@ export const calculateBouceEffect = (
     bounceEffect = 0.25;
     duration = 200;
   }
+  if (prevExpand == ExpandType.None && newExpand == ExpandType.Split) {
+    // undefined -> capsule
+    bounceEffect = 0.35;
+    duration = 250;
+  }
   if (prevExpand == ExpandType.Pill && newExpand == ExpandType.PillFull) {
     // pill -> pill-full
     bounceEffect = 0.2;
     duration = 200;
   }
   if (prevExpand == ExpandType.Pill && newExpand == ExpandType.Capsule) {
+    // pill -> capsule
+    bounceEffect = 0.25;
+    duration = 650;
+  }
+  if (prevExpand == ExpandType.Pill && newExpand == ExpandType.Split) {
     // pill -> capsule
     bounceEffect = 0.25;
     duration = 650;
@@ -58,6 +68,11 @@ export const calculateBouceEffect = (
     // full -> pill
     bounceEffect = 0.2;
     duration = 600;
+  }
+  if (prevExpand == ExpandType.Full && newExpand == ExpandType.Split) {
+    // full -> pill
+    bounceEffect = 0.2;
+    duration = 800;
   }
   if (prevExpand == ExpandType.Full && newExpand == ExpandType.None) {
     // full -> undefined
@@ -78,6 +93,11 @@ export const calculateBouceEffect = (
     // capsule -> undefined
     bounceEffect = 0.15;
     duration = 650;
+  }
+  if (prevExpand == ExpandType.Split && newExpand == ExpandType.None) {
+    // capsule -> undefined
+    bounceEffect = 0.25;
+    duration = 750;
   }
   if (prevExpand == ExpandType.PillFull && newExpand == ExpandType.None) {
     // pill-full -> undefined

@@ -12,7 +12,7 @@ module.exports = {
                 inter: ["var(--font-inter)", "sans-serif"],
             },
             fontSize: {
-                "2xs": "0.625rem",
+                "2xs": "0.688rem",
             }
         },
     },

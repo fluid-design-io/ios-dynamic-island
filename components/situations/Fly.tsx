@@ -53,7 +53,7 @@ Fly.Full = (): React.ReactElement => {
     <Island.Full>
       <div className='flex w-full justify-between'>
         <motion.div
-          layoutId='fly-left'
+          layoutId='pill-left'
           className='text-green-400 uppercase h-full flex items-start gap-1.5'
           initial={{
             WebkitFilter: "blur(8px)",
@@ -71,7 +71,7 @@ Fly.Full = (): React.ReactElement => {
           <span className='text-xs text-zinc-100 font-light'>FL123</span>
         </motion.div>
         <motion.div
-          layoutId='fly-right'
+          layoutId='pill-right'
           layout
           className='text-green-400 h-full flex items-center gap-1.5'
           initial={{

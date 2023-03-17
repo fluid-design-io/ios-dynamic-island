@@ -8,20 +8,22 @@ import { ImPhone } from "react-icons/im";
 import { motion } from "framer-motion";
 import { SituationType, useIsland } from "@/lib/store";
 import { VoiceIndicator } from "@/components/Icons";
+import { formatTime, useTimer } from "@/hooks/useTimer";
 
 type CallComponent = Record<string, React.FC<any>>;
 
 export const Call: CallComponent = {};
 
 Call.AnsweredPill = (): React.ReactElement => {
+  const { time } = useTimer();
   return (
     <Island.Pill>
       <Island.PillStart className='text-green-400 uppercase'>
         <div className='inline-block -translate-x-1'>
           <ImPhone className='w-2.5 h-2.5 text-green-500 rotate-[15deg]' />
         </div>
-        <span className='text-2xs font-medium normal-nums -translate-x-1'>
-          0:03
+        <span className='text-2xs font-medium normal-nums -translate-x-1 tabular-nums'>
+          {formatTime(time)}
         </span>
       </Island.PillStart>
       <Island.PillEnd className='text-green-400'>
@@ -33,6 +35,7 @@ Call.AnsweredPill = (): React.ReactElement => {
 
 Call.InComingCapsule = () => {
   const { switchDuration, reset, switchSituation } = useIsland();
+  const { start } = useTimer();
   return (
     <Island.Capsule>
       <div className='flex justify-between w-full gap-3 items-center'>
@@ -81,9 +84,12 @@ Call.InComingCapsule = () => {
           <button
             className='bg-green-500 rounded-full p-2.5 hover:bg-green-600 active:bg-green-600/80 transition-colors duration-200 ease-in-out'
             aria-label='Answer call'
-            onClick={() =>
-              switchSituation(SituationType.CallAnsweredPill, false)
-            }
+            onClick={() => {
+              start();
+              setTimeout(() => {
+                switchSituation(SituationType.CallAnsweredPill, false);
+              }, 100);
+            }}
           >
             <ImPhone className='w-4 h-4 text-zinc-50' />
           </button>
@@ -95,6 +101,7 @@ Call.InComingCapsule = () => {
 
 Call.AnsweredCapsule = () => {
   const { switchDuration, reset } = useIsland();
+  const { time, stop } = useTimer();
   return (
     <Island.Capsule>
       <div className='flex justify-between w-full gap-3 items-center'>
@@ -117,7 +124,9 @@ Call.AnsweredCapsule = () => {
             />
           </div>
           <div className='flex flex-col justify-center'>
-            <p className='text-2xs text-zinc-400'>00:03</p>
+            <p className='text-2xs text-zinc-400 tabular-nums'>
+              {formatTime(time)}
+            </p>
             <h3 className='font-medium text-zinc-50 -mt-1 text-sm'>
               Aga Orlova
             </h3>
@@ -135,7 +144,10 @@ Call.AnsweredCapsule = () => {
         >
           <button
             className='bg-red-500 rounded-full p-3 hover:bg-red-600 active:bg-red-600/80 transition-colors duration-200 ease-in-out'
-            onClick={reset}
+            onClick={() => {
+              stop();
+              reset();
+            }}
             aria-label='Hang up'
           >
             <ImPhone className='w-4 h-4 text-zinc-50 rotate-[135deg] translate-y-0.5' />

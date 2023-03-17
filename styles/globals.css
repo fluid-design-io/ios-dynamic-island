@@ -12,6 +12,9 @@
   .island-background {
     background-color: #020202;
   }
+  .island-fill-color {
+    @apply fill-[#020202];
+  }
   .island {
     @apply island-background;
   }

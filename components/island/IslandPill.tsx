@@ -88,7 +88,7 @@ export const PillEnd = ({
       };
   return (
     <motion.div
-      layoutId='fly-right'
+      layoutId='pill-right'
       layout
       className={clsx("island-pill-end", className)}
       initial={{

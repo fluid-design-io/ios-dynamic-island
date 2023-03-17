@@ -9,6 +9,7 @@ import { IoIosWifi, IoIosBatteryFull } from "react-icons/io";
 import { TbNavigationFilled } from "react-icons/tb";
 import clsx from "clsx";
 import { ExpandType, useIsland } from "@/lib/store";
+import useLocalTime from "@/hooks/useLocalTime";
 
 const Item = memo(({ children }: { children: React.ReactNode }) => {
   const duration = 0.13;
@@ -79,6 +80,7 @@ Item.displayName = "Item";
 
 export const StatusBar = () => {
   const statusBarRef = useRef<HTMLDivElement>(null);
+  const time = useLocalTime(true, false);
   const { expand, isAnimating, islandDimensions, situation } = useIsland();
   const { width: statsBarWidth } = useDimensions(statusBarRef);
   const { width: islandWidth } = useDimensionsById("island");
@@ -88,7 +90,9 @@ export const StatusBar = () => {
   const [hideStatusDot, setHideStatusDot] = useState(true);
 
   const shouldInteractWithIsland =
-    expand === ExpandType.None || expand === ExpandType.Pill;
+    expand === ExpandType.None ||
+    expand === ExpandType.Pill ||
+    expand === ExpandType.Split;
   const statusIconClassName = "text-zinc-900 w-5 h-5";
   const rem = (x: number) => 4 * x;
   const widthLeft = Math.max(
@@ -96,9 +100,13 @@ export const StatusBar = () => {
     rem(5)
   );
   const widthPerSide = widthLeft / 2 - rem(2.5);
+  const widthLeftSide =
+    expand === ExpandType.Split ? widthPerSide - 50 : widthPerSide;
+  const widthRightSide =
+    expand === ExpandType.Split ? widthPerSide + 50 : widthPerSide;
   const transition = {
     type: "spring",
-    bounce: 0.4,
+    bounce: ExpandType.Split ? 0.1 : 0.4,
     restDelta: 0.008,
   };
   useEffect(() => {
@@ -127,13 +135,20 @@ export const StatusBar = () => {
       >
         <motion.div
           className='font-semibold flex-grow flex justify-center items-center w-full'
-          //   style={{ maxWidth: widthPerSide }}
-          transition={transition}
+          initial={false}
+          animate={{
+            x: expand === ExpandType.Split ? -12 : 0,
+          }}
+          transition={
+            ExpandType.Split
+              ? { bounce: 0.6, delay: 0.12, duration: 0.3 }
+              : transition
+          }
         >
           <AnimatePresence mode='popLayout' initial={false}>
             {widthLeft > 80 && (
               <Item key='clock'>
-                <span>9:41</span>
+                <time>{time}</time>
               </Item>
             )}
             {!hideLocation && (
@@ -152,6 +167,10 @@ export const StatusBar = () => {
         <motion.div
           className='flex items-center flex-grow justify-center w-full'
           transition={transition}
+          initial={false}
+          animate={{
+            x: expand === ExpandType.Split ? 16 : 0,
+          }}
         >
           <AnimatePresence mode='popLayout' initial={false}>
             {widthLeft > 110 && (
@@ -161,7 +180,7 @@ export const StatusBar = () => {
                 />
               </Item>
             )}
-            {widthLeft > 170 && (
+            {widthLeft > 170 && expand !== ExpandType.Split && (
               <Item key='wifi'>
                 <IoIosWifi className={statusIconClassName} />
               </Item>
@@ -181,13 +200,11 @@ export const StatusBar = () => {
           </AnimatePresence>
         </motion.div>
       </motion.div>
-      <div className='bg-black absolute top-36 inset-x-0 w-full text-purple-200 p-4 hidden'>
+      <div className='bg-black absolute top-36 inset-x-0 w-full text-purple-200 p-4'>
         <p>Width: {statsBarWidth}</p>
-        <p>Width Left: {widthLeft}</p>
-        <p>Width Perside: {widthPerSide}</p>
+        <p>Width Left Side: {widthLeftSide}</p>
+        <p>Width Right Side: {widthRightSide}</p>
         <p>Island Dynamic Width: {islandWidth}</p>
-        <p>Island Static Width: {largestIslandWidth}</p>
-        <p>lastIslandWidth: {lastIslandWidth}</p>
         <p>Situation: {situation}</p>
       </div>
     </>

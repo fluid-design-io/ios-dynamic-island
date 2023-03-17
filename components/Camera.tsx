@@ -1,6 +1,6 @@
 export const Camera = () => {
   return (
-    <div className='absolute h-7 w-7 flex justify-center items-center top-0 right-0 rounded-full'>
+    <div className='absolute h-7 w-7 flex justify-center items-center top-[1px] right-0 rounded-full'>
       <div className='relative h-6 w-6'>
         <div className='absolute inset-0 bg-gradient-to-r from-zinc-900 to-transparent rounded-full'></div>
         <div className='absolute inset-0.5 bg-zinc-900 rounded-full'></div>

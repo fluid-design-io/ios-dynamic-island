@@ -6,7 +6,7 @@ import {
   useMotionTemplate,
   useSpring,
 } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Frame,
   Toolbar,
@@ -18,6 +18,7 @@ import {
 import clsx from "clsx";
 import { useTapAndHold } from "@/hooks/useTapAndHold";
 import { ExpandType, SituationType, useIsland } from "@/lib/store";
+import { CircleIsland } from "./CircleIsland";
 
 export const IslandComponent = () => {
   const {
@@ -36,7 +37,11 @@ export const IslandComponent = () => {
     islandRef,
     () => {
       if (situation !== SituationType.None) {
-        if (expand === ExpandType.Pill || expand === ExpandType.PillFull) {
+        if (
+          expand === ExpandType.Pill ||
+          expand === ExpandType.PillFull ||
+          expand === ExpandType.Split
+        ) {
           switchTabHoldSituation(situation, switchSituation);
           setTimeout(() => {
             resetTapped();
@@ -46,6 +51,9 @@ export const IslandComponent = () => {
     },
     400
   );
+  const [overflow, setOverflow] = useState<
+    "overflow-hidden" | "overflow-visible"
+  >("overflow-hidden");
 
   const islandVariants = {
     hover:
@@ -137,16 +145,30 @@ export const IslandComponent = () => {
       islandShadowBlur.set(36);
       islandOpacityValue.set(0.4);
     }
-    if (
-      expand === ExpandType.Pill ||
-      expand === ExpandType.PillFull ||
-      expand === ExpandType.None
-    ) {
+    if (expand !== ExpandType.Capsule && expand !== ExpandType.Full) {
       islandShadowY.set(0);
       islandShadowBlur.set(0);
       islandOpacityValue.set(0);
     }
   }, [expand, islandShadowY, islandShadowBlur, islandOpacityValue]);
+  // useEffect(() => {
+  //   let intervalId: NodeJS.Timeout;
+  //   if (expand === ExpandType.Split) {
+  //     setOverflow("overflow-visible");
+  //   } else {
+  //     intervalId = setInterval(() => {
+  //       // @ts-ignore
+  //       if (expand !== ExpandType.Split) {
+  //         setOverflow("overflow-hidden");
+  //       } else {
+  //         setOverflow("overflow-visible");
+  //         clearInterval(intervalId);
+  //       }
+  //     }, 550);
+  //   }
+
+  //   return () => clearInterval(intervalId);
+  // }, [expand]);
   return (
     <div className='flex flex-col justify-between w-full'>
       <Frame>
@@ -155,7 +177,7 @@ export const IslandComponent = () => {
           <motion.div
             style={{
               position: "absolute",
-              height: 30 - 2,
+              height: 32 - 2,
               width: 102 - 4,
               borderRadius: 18,
               backgroundColor: "#020202",
@@ -173,16 +195,20 @@ export const IslandComponent = () => {
           >
             <Camera />
           </motion.div>
+
+          {/* Circle Island for clock example */}
+          <CircleIsland />
           {/* Main Island */}
           <motion.div
             id='island'
             ref={islandRef} // this is the ref for the tap and hold
             className={clsx(
-              "z-10 absolute ring-1 island select-none overflow-hidden touch-manipulation mx-auto inset-x-0 top-0",
+              "z-10 absolute ring-1 island select-none touch-manipulation mx-auto inset-x-0 top-0",
               {
                 "ring-black/0 dark:ring-white/0": expand === ExpandType.None,
                 "ring-black/5 dark:ring-white/5": expand !== ExpandType.None,
               }
+              // overflow // this is the overflow hidden for the pill and visible for the split
             )}
             initial={false}
             animate={{
@@ -193,9 +219,15 @@ export const IslandComponent = () => {
             whileHover='hover'
             whileTap='tap'
             transition={{
-              type: "spring",
-              bounce: islandBouceEffect,
-              restDelta: 0.008,
+              default: {
+                type: "spring",
+                bounce: islandBouceEffect,
+                restDelta: 0.008,
+              },
+              left: {
+                type: "spring",
+                bounce: islandBouceEffect + 0.1,
+              },
             }}
             style={{
               boxShadow: islandDropShadow,

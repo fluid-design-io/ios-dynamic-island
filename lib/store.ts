@@ -6,6 +6,7 @@ export enum ExpandType {
   PillFull = "pill-full",
   Capsule = "capsule",
   Full = "full",
+  Split = "split",
   None = "none",
 }
 
@@ -15,6 +16,7 @@ export enum SituationType {
   CallAnsweredPill = "call-answered-pill",
   CallIncomingCapsule = "call-incoming-capsule",
   CallAnsweredCapsule = "call-answered-capsule",
+  MusicAndCounter = "music-and-counter",
   None = "none",
 }
 
@@ -50,7 +52,7 @@ export const EXPAND_FULL_WIDTH = "100%";
 
 export const useIsland = create<IslandState>((set, get) => {
   const islandDimensions = {
-    height: 30,
+    height: 32,
     width: 102,
     borderRadius: 18,
   };
@@ -115,6 +117,8 @@ export const useIsland = create<IslandState>((set, get) => {
           case SituationType.CallAnsweredPill:
             get().switchIsland(ExpandType.Pill, shouldReset);
             break;
+          case SituationType.MusicAndCounter:
+            get().switchIsland(ExpandType.Split, shouldReset);
           default:
             break;
         }
@@ -143,22 +147,35 @@ export const useIsland = create<IslandState>((set, get) => {
         setTimeout(() => {
           set({
             islandDimensions: {
-              height: 30,
+              height: 32,
               width: 102,
-              borderRadius: 18,
+              borderRadius: 16,
             },
             islandBouceEffect: bounceEffect,
             expand: newExpand,
           });
         }, 80);
         break;
+      case "split":
+        setTimeout(() => {
+          set({
+            islandDimensions: {
+              height: 32,
+              width: 102,
+              borderRadius: 16,
+            },
+            islandBouceEffect: bounceEffect,
+            expand: newExpand,
+          });
+        }, switchDuration);
+        break;
       case ExpandType.Pill:
         setTimeout(() => {
           set({
             islandDimensions: {
-              height: 30,
+              height: 32,
               width: 194 + pillOffset,
-              borderRadius: 18,
+              borderRadius: 16,
             },
             islandBouceEffect: bounceEffect,
             expand: newExpand,
@@ -169,9 +186,9 @@ export const useIsland = create<IslandState>((set, get) => {
         setTimeout(() => {
           set({
             islandDimensions: {
-              height: 30,
+              height: 32,
               width: EXPAND_PILL_FULL_WIDTH,
-              borderRadius: 18,
+              borderRadius: 16,
             },
             islandBouceEffect: bounceEffect,
             expand: newExpand,
