@@ -16,11 +16,21 @@ import {
 import { useEffect, useState } from "react";
 import { MusicAndCounter } from "../situations/MusicAndCounter";
 export const CircleIsland = () => {
-  const { expand, situation, initialExpandAnimation, switchDuration } =
-    useIsland();
+  const {
+    expand,
+    situation,
+    initialExpandAnimation,
+    switchDuration,
+    startAnimating,
+    stopAnimating,
+  } = useIsland();
   const [isSplitted, setIsSplitted] = useState(false);
   const inputMorphValue = isSplitted ? [0, 6, 8] : [0, 2, 8];
-  const morph = useSpring(0, { stiffness: 120, damping: 40, mass: 2 }); // min 0, max 8
+  const morph = useSpring(0, {
+    stiffness: isSplitted ? 180 : 120,
+    damping: isSplitted ? 30 : 50,
+    mass: 2,
+  }); // min 0, max 8
   const leftSideWidth = useSpring(32, { bounce: 0.18 });
   const morphValue = useTransform(morph, inputMorphValue, [0, 0, 8]);
   const morphOppo = useTransform(morph, inputMorphValue, [16, 16, 8]);
@@ -42,7 +52,13 @@ export const CircleIsland = () => {
   const distanceTransform = useTransform(
     morph,
     [0, 8],
-    [333 / 2 + 24, 333 / 2 + 60]
+    [333 / 2 + 20, 333 / 2 + 60]
+  );
+  // the transform of the opposite side of the island for the water drop effect
+  const distanceOffsetTransform = useTransform(
+    morph,
+    [0, 4, 8],
+    [333 / 2 + 20, 333 / 2 + 24, 333 / 2 + 20]
   );
   const circleIslandWidth = useTransform(morph, inputMorphValue, [
     32,
@@ -64,14 +80,29 @@ export const CircleIsland = () => {
       leftSideWidth.set(32);
     }
   }, [expand]);
-  const initial = initialExpandAnimation
+  morph.on("change", (value) => {
+    if (value < 0.2 || value > 7.6) {
+      stopAnimating();
+    } else {
+      startAnimating();
+    }
+  });
+  const initial = itemEnterAnimation
     ? { ...itemEnterAnimation, scaleX: 1 }
     : itemEnterAnimation;
   const animate = initialExpandAnimation
     ? {
         ...itemExpandAnimation,
+        transition: {
+          delay: switchDuration / 1000,
+        },
       }
-    : itemExpandAnimation;
+    : {
+        itemExpandAnimation,
+        transition: {
+          delay: 0.14,
+        },
+      };
   const exit = itemExitAnimation;
 
   return (
@@ -91,7 +122,6 @@ export const CircleIsland = () => {
               animate={animate}
               exit={exit}
               className='flex justify-start items-center h-full pl-2'
-              transition={{ type: "spring", bounce: 0, duration: 0.7 }}
             >
               <MusicAndCounter.Left />
             </motion.div>
@@ -107,7 +137,7 @@ export const CircleIsland = () => {
         xmlns='http://www.w3.org/2000/svg'
         className='absolute top-0 z-20 rounded-[50%] rotate-180 overflow-visible island-fill-color'
         style={{
-          left: 333 / 2 + 24,
+          left: distanceOffsetTransform,
         }}
       >
         <motion.path d={d} fill='inherit' />

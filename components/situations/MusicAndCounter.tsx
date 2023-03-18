@@ -12,6 +12,7 @@ MusicAndCounter.Left = () => {
       src={musicAlbum}
       alt='music albumn'
       className='object-cover w-4 h-4 rounded'
+      placeholder='blur'
     />
   );
 };

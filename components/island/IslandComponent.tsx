@@ -51,9 +51,7 @@ export const IslandComponent = () => {
     },
     400
   );
-  const [overflow, setOverflow] = useState<
-    "overflow-hidden" | "overflow-visible"
-  >("overflow-hidden");
+  const [isCircleIslandActive, setIsCircleIslandActive] = useState(false);
 
   const islandVariants = {
     hover:
@@ -151,6 +149,24 @@ export const IslandComponent = () => {
       islandOpacityValue.set(0);
     }
   }, [expand, islandShadowY, islandShadowBlur, islandOpacityValue]);
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+    if (expand === ExpandType.Split) {
+      setIsCircleIslandActive(true);
+    } else {
+      intervalId = setInterval(() => {
+        // @ts-ignore
+        if (expand !== ExpandType.Split) {
+          setIsCircleIslandActive(false);
+        } else {
+          setIsCircleIslandActive(true);
+          clearInterval(intervalId);
+        }
+      }, 1400);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [expand]);
   return (
     <div className='flex flex-col justify-between w-full'>
       <Frame>
@@ -179,7 +195,7 @@ export const IslandComponent = () => {
           </motion.div>
 
           {/* Circle Island for clock example */}
-          <CircleIsland />
+          {isCircleIslandActive && <CircleIsland />}
           {/* Main Island */}
           <motion.div
             id='island'
