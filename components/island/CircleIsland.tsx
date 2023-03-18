@@ -1,24 +1,30 @@
 "use client";
 
-import { ExpandType, useIsland } from "@/lib/store";
+import {
+  itemEnterAnimation,
+  itemExitAnimation,
+  itemExpandAnimation,
+} from "@/lib/animations";
+import { ExpandType, SituationType, useIsland } from "@/lib/store";
 import {
   motion,
   useSpring,
   useMotionTemplate,
   useTransform,
+  AnimatePresence,
 } from "framer-motion";
 import { useEffect, useState } from "react";
+import { MusicAndCounter } from "../situations/MusicAndCounter";
 export const CircleIsland = () => {
-  const { expand } = useIsland();
+  const { expand, situation, initialExpandAnimation, switchDuration } =
+    useIsland();
   const [isSplitted, setIsSplitted] = useState(false);
-  const inputMorphValue = [0, 6, 8];
-  const morph = useSpring(0, { stiffness: 170, damping: 30, mass: 2 }); // min 0, max 8
+  const inputMorphValue = isSplitted ? [0, 6, 8] : [0, 2, 8];
+  const morph = useSpring(0, { stiffness: 120, damping: 40, mass: 2 }); // min 0, max 8
   const leftSideWidth = useSpring(32, { bounce: 0.18 });
-  // const morphOppo = size - morph.get();
   const morphValue = useTransform(morph, inputMorphValue, [0, 0, 8]);
   const morphOppo = useTransform(morph, inputMorphValue, [16, 16, 8]);
   const bezierStrength = useTransform(morph, inputMorphValue, [3.6, 7, 8]);
-  // const upperMidpoint = (morph.get() / 8) * 3.4 + 3.6; // min 3.6 max 7
   const outputUpperMidpoint = [3.6, 1, 7];
   const outputLowerMidpoint = [12.4, 15, 9];
   const upperMidpoint = useTransform(
@@ -49,23 +55,48 @@ export const CircleIsland = () => {
     if (expand === ExpandType.Split) {
       setIsSplitted(true);
       morph.set(8);
-      leftSideWidth.set(62);
+      setTimeout(() => {
+        leftSideWidth.set(62);
+      }, 100);
     } else {
       setIsSplitted(false);
       morph.set(0);
       leftSideWidth.set(32);
     }
-  }, [expand, morph, setIsSplitted]);
+  }, [expand]);
+  const initial = initialExpandAnimation
+    ? { ...itemEnterAnimation, scaleX: 1 }
+    : itemEnterAnimation;
+  const animate = initialExpandAnimation
+    ? {
+        ...itemExpandAnimation,
+      }
+    : itemExpandAnimation;
+  const exit = itemExitAnimation;
+
   return (
     <>
       <motion.div
-        className='absolute top-0 z-20 rounded-l-full h-[32px] island-background overflow-hidden'
+        className='absolute top-0 z-20 rounded-l-full h-[32px] overflow-hidden island-background'
         style={{
           width: leftSideWidth,
           right: 333 / 2 + 102 / 2 - 32,
         }}
       >
-        <div>Hi there</div>
+        <AnimatePresence>
+          {situation === SituationType.MusicAndCounter && (
+            <motion.div
+              key={`circle-island-left-${expand}`}
+              initial={initial}
+              animate={animate}
+              exit={exit}
+              className='flex justify-start items-center h-full pl-2'
+              transition={{ type: "spring", bounce: 0, duration: 0.7 }}
+            >
+              <MusicAndCounter.Left />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
       <motion.svg
         key={`circle-island-${expand}`}
@@ -75,11 +106,7 @@ export const CircleIsland = () => {
         viewBox='0 0 16 16'
         xmlns='http://www.w3.org/2000/svg'
         className='absolute top-0 z-20 rounded-[50%] rotate-180 overflow-visible island-fill-color'
-        transition={{
-          zIndex: { duration: 0 },
-        }}
         style={{
-          zIndex: expand === ExpandType.Split ? 10 : 0,
           left: 333 / 2 + 24,
         }}
       >
@@ -90,12 +117,8 @@ export const CircleIsland = () => {
         style={{
           position: "absolute",
           left: distanceTransform,
-          zIndex: expand === ExpandType.Split ? 10 : 0,
         }}
-        className='absolute top-0 z-40'
-        transition={{
-          zIndex: { duration: 0 },
-        }}
+        className='absolute top-0 z-20'
       >
         <motion.svg
           fill='inhert'
@@ -112,7 +135,30 @@ export const CircleIsland = () => {
             width: circleIslandWidth,
           }}
           className='absolute left-0 top-0 island-background h-[32px] rounded-[50%] overflow-visible'
-        />
+        >
+          <AnimatePresence>
+            {situation === SituationType.MusicAndCounter && (
+              <motion.div
+                key={`circle-island-right-${expand}`}
+                initial={initial}
+                animate={animate}
+                exit={{
+                  ...exit,
+                  transition: {
+                    opacity: {
+                      delay: 2,
+                      duration: 0.7,
+                    },
+                  },
+                }}
+                className='flex justify-center items-center h-full'
+                transition={{ type: "spring", bounce: 0, duration: 0.7 }}
+              >
+                <MusicAndCounter.Right />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </motion.div>
     </>
   );

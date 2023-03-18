@@ -35,7 +35,7 @@ Call.AnsweredPill = (): React.ReactElement => {
 
 Call.InComingCapsule = () => {
   const { switchDuration, reset, switchSituation } = useIsland();
-  const { start } = useTimer();
+  const { start, stop } = useTimer();
   return (
     <Island.Capsule>
       <div className='flex justify-between w-full gap-3 items-center'>
@@ -76,7 +76,10 @@ Call.InComingCapsule = () => {
         >
           <button
             className='bg-red-500 rounded-full p-3 hover:bg-red-600 active:bg-red-600/80 transition-colors duration-200 ease-in-out'
-            onClick={reset}
+            onClick={() => {
+              stop();
+              reset();
+            }}
             aria-label='Hang up'
           >
             <ImPhone className='w-4 h-4 text-zinc-50 rotate-[135deg] translate-y-0.5' />

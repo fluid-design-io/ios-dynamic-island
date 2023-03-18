@@ -61,7 +61,7 @@ export const calculateBouceEffect = (
   }
   if (prevExpand == ExpandType.Full && newExpand == ExpandType.Pill) {
     // full -> pill
-    bounceEffect = 0.18;
+    bounceEffect = 0.05;
     duration = 780;
   }
   if (prevExpand == ExpandType.Full && newExpand == ExpandType.Capsule) {
@@ -95,6 +95,11 @@ export const calculateBouceEffect = (
     duration = 650;
   }
   if (prevExpand == ExpandType.Split && newExpand == ExpandType.None) {
+    // capsule -> undefined
+    bounceEffect = 0.25;
+    duration = 850;
+  }
+  if (prevExpand == ExpandType.Split && newExpand == ExpandType.Split) {
     // capsule -> undefined
     bounceEffect = 0.25;
     duration = 750;

@@ -200,7 +200,10 @@ export const StatusBar = () => {
           </AnimatePresence>
         </motion.div>
       </motion.div>
-      <div className='bg-black absolute top-36 inset-x-0 w-full text-purple-200 p-4'>
+      {/* 
+      DEBUG Panel
+      */}
+      <div className='bg-black absolute top-36 inset-x-0 w-full text-purple-200 p-4 hidden'>
         <p>Width: {statsBarWidth}</p>
         <p>Width Left Side: {widthLeftSide}</p>
         <p>Width Right Side: {widthRightSide}</p>

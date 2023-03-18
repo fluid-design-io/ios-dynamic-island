@@ -54,7 +54,7 @@ export const useIsland = create<IslandState>((set, get) => {
   const islandDimensions = {
     height: 32,
     width: 102,
-    borderRadius: 18,
+    borderRadius: 16,
   };
 
   /**

@@ -21,6 +21,7 @@ export const useTimer = create<TimerStore>((set, get) => ({
   stop: () => {
     const { intervalId } = get();
     if (intervalId) clearInterval(intervalId);
+    set(() => ({ intervalId: undefined, time: 0 }));
   },
 }));
 

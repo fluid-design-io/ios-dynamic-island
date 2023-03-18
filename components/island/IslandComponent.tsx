@@ -151,24 +151,6 @@ export const IslandComponent = () => {
       islandOpacityValue.set(0);
     }
   }, [expand, islandShadowY, islandShadowBlur, islandOpacityValue]);
-  // useEffect(() => {
-  //   let intervalId: NodeJS.Timeout;
-  //   if (expand === ExpandType.Split) {
-  //     setOverflow("overflow-visible");
-  //   } else {
-  //     intervalId = setInterval(() => {
-  //       // @ts-ignore
-  //       if (expand !== ExpandType.Split) {
-  //         setOverflow("overflow-hidden");
-  //       } else {
-  //         setOverflow("overflow-visible");
-  //         clearInterval(intervalId);
-  //       }
-  //     }, 550);
-  //   }
-
-  //   return () => clearInterval(intervalId);
-  // }, [expand]);
   return (
     <div className='flex flex-col justify-between w-full'>
       <Frame>
@@ -181,7 +163,7 @@ export const IslandComponent = () => {
               width: 102 - 4,
               borderRadius: 18,
               backgroundColor: "#020202",
-              zIndex: 20,
+              zIndex: 50,
               top: 1,
               pointerEvents: "none",
               boxShadow: islandCutoutDropShadow,
@@ -203,12 +185,11 @@ export const IslandComponent = () => {
             id='island'
             ref={islandRef} // this is the ref for the tap and hold
             className={clsx(
-              "z-10 absolute ring-1 island select-none touch-manipulation mx-auto inset-x-0 top-0",
+              "z-30 absolute ring-1 island select-none touch-manipulation mx-auto inset-x-0 top-0 overflow-hidden",
               {
                 "ring-black/0 dark:ring-white/0": expand === ExpandType.None,
                 "ring-black/5 dark:ring-white/5": expand !== ExpandType.None,
               }
-              // overflow // this is the overflow hidden for the pill and visible for the split
             )}
             initial={false}
             animate={{
@@ -238,7 +219,7 @@ export const IslandComponent = () => {
           >
             {/* island background for hover/tap */}
             <motion.div
-              className='island-background absolute pointer-events-none z-[10] inset-0'
+              className='island-background absolute pointer-events-none z-30 inset-0'
               initial={false}
               animate={{
                 borderRadius: islandDimensions.borderRadius,
@@ -257,7 +238,7 @@ export const IslandComponent = () => {
         <AnimatePresence>
           {(expand === ExpandType.Full || expand === ExpandType.Capsule) && (
             <div
-              className='absolute inset-0'
+              className='absolute inset-0 z-20'
               style={{
                 WebkitMask: `linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) ${
                   islandDimensions.height

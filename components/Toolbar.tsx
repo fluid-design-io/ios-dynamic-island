@@ -13,7 +13,7 @@ export const Toolbar = () => {
         <Button
           sr='Call'
           onClick={() => switchSituation(SituationType.CallIncomingCapsule)}
-          color='lime'
+          color='indigo'
           disabled={isAnimating}
           icon={ImPhone}
           iconOnly
@@ -24,7 +24,7 @@ export const Toolbar = () => {
         <Button
           sr='Fly'
           onClick={() => switchSituation(SituationType.Fly)}
-          color='lime'
+          color='indigo'
           disabled={isAnimating}
           icon={ImAirplane}
           iconOnly
@@ -35,7 +35,7 @@ export const Toolbar = () => {
         <Button
           sr='Fly'
           onClick={() => switchSituation(SituationType.MusicAndCounter)}
-          color='lime'
+          color='indigo'
           disabled={isAnimating}
           weight='light'
           size='lg'
@@ -53,6 +53,7 @@ export const Toolbar = () => {
           onClick={() => switchIsland(ExpandType.Pill)}
           color='cyan'
           weight='clear'
+          size='sm'
           disabled={isAnimating}
         />
         <Button
@@ -60,6 +61,7 @@ export const Toolbar = () => {
           onClick={() => switchIsland(ExpandType.Capsule)}
           color='cyan'
           weight='clear'
+          size='sm'
           disabled={isAnimating}
         />
         <Button
@@ -67,6 +69,7 @@ export const Toolbar = () => {
           onClick={() => switchIsland(ExpandType.Split)}
           color='cyan'
           weight='clear'
+          size='sm'
           disabled={isAnimating}
         />
         <Button
@@ -74,9 +77,16 @@ export const Toolbar = () => {
           onClick={() => switchIsland(ExpandType.Full)}
           color='cyan'
           weight='clear'
+          size='sm'
           disabled={isAnimating}
         />
-        <Button label='Reset' onClick={reset} disabled={isAnimating} />
+        <Button
+          label='Reset'
+          onClick={reset}
+          disabled={isAnimating}
+          size='sm'
+          color='indigo'
+        />
       </div>
     </div>
   );
